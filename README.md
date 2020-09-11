@@ -162,7 +162,7 @@ Download the version `0.2` of the BONSAI ontology from this url `https://ontolog
 
 
 ## Setup Virtuoso
-
+Follow the following guide from the following url to setup virtuoso: `https://people.cs.aau.dk/~matteo/notes/virtuoso-setup-on-docker.html` 
 
 ## Load Triples
 From the isql command line, execute each of the following lines, one at a time, to import all graphs:
@@ -210,3 +210,4 @@ checkpoint;
 ```
 
 ## setup Yasgui
+The yasgui requires no installation. Just place the index.html file in the `srv/import/vsp` folder.
