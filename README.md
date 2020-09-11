@@ -2,14 +2,14 @@
 The overall workflow has several steps, which needs to be executed in the correct order.
 Below is the list of steps, followed by individual instructions:
 
-- install machine
-- clone repos
-- download files
-- start conversion scripts
-- collect triple files
-- setup virtuoso
-- load triples
-- setup Yasgui
+- Install machine
+- Clone repos
+- Download files
+- Start conversion scripts
+- Collect triple files
+- Setup virtuoso
+- Load triples
+- Setup Yasgui
 
 
 ## Install machine
@@ -208,3 +208,5 @@ ld_dir ('/import', 'flo_obj_us_epa_elem.ttl', 'http://rdf.bonsai.uno/flowobject/
 rdf_loader_run ();
 checkpoint;
 ```
+
+## setup Yasgui
