@@ -163,52 +163,29 @@ Download the version `0.2` of the BONSAI ontology from this url `https://ontolog
 
 
 ## Setup Virtuoso
-Follow the following guide from the following url to setup virtuoso: `https://people.cs.aau.dk/~matteo/notes/virtuoso-setup-on-docker.html` 
+Pull docker Virtuoso
+`docker pull openlink/virtuoso-opensource-7:latest`
+Made database directory
+`mkdir -p database`
+Get custom virtuoso.ini file
+`wget https://gist.githubusercontent.com/kuzeko/5d53f9800a4b6d45006f0f9dc322ed07/raw/bb2c404ea315f7f56e71523a87a7e6679815b13a/virtuoso.ini.example -O virtuoso.ini`
+Make database directory
+`mv virtuoso.ini database/`
+Make import folder
+`mkdir -p import`
+Run docker
+`docker run --name vos -d --volume `pwd`/database:/database -v `pwd`/import:/import -t -p 1111:1111 -p 8890:8890 -i openlink/virtuoso-opensource-7:latest`
 
 ## Load Triples
-From the isql command line, execute each of the following lines, one at a time, to import all graphs:
-
-```iSQL
-# flush previous load lists
-delete from DB.DBA.load_list;
-
-# YSTAFDB Graphs
-ld_dir ('/import', 'act_ystafdb.ttl', 'http://rdf.bonsai.uno/activitytype/ystafdb');
-ld_dir ('/import', 'flo_obj_ystafdb.ttl', 'http://rdf.bonsai.uno/flowobject/ystafdb');
-ld_dir ('/import', 'foaf_ystafdb.ttl', 'http://rdf.bonsai.uno/foaf/ystafdb');
-ld_dir ('/import', 'loc_ystafdb.ttl', 'http://rdf.bonsai.uno/location/ystafdb');
-ld_dir ('/import', 'prov_ystafdb.ttl', 'http://rdf.bonsai.uno/prov/ystafdb');
-ld_dir ('/import', 'ystafdb_huse.ttl', 'http://rdf.bonsai.uno/data/ystafdb/huse');
-
-# EXIOBASE Graphs
-ld_dir ('/import', 'act_exiobase3_3_17.ttl', 'http://rdf.bonsai.uno/activitytype/exiobase3_3_17');
-ld_dir ('/import', 'flo_obj_exiobase3_3_17.ttl', 'http://rdf.bonsai.uno/flowobject/exiobase3_3_17');
-ld_dir ('/import', 'foaf_exiobase3_3_17.ttl', 'http://rdf.bonsai.uno/foaf/exiobase3_3_17');
-ld_dir ('/import', 'loc_exiobase3_3_17.ttl', 'http://rdf.bonsai.uno/location/exiobase3_3_17');
-ld_dir ('/import', 'prov_exiobase3_3_17.ttl', 'http://rdf.bonsai.uno/prov/exiobase3_3_17');
-ld_dir ('/import', 'exiobase_hsup.nt.gz', 'http://rdf.bonsai.uno/data/exiobase3_3_17/hsup');
-ld_dir ('/import', 'exiobase_huse.nt.gz', 'http://rdf.bonsai.uno/data/exiobase3_3_17/huse');
-ld_dir ('/import', 'exiobase3_3_17_emission.ttl', 'http://rdf.bonsai.uno/data/exiobase3_3_17/emission');
-
-# Time and Unit Graphs
-ld_dir ('/import', 'time.ttl', 'http://rdf.bonsai.uno/time');
-ld_dir ('/import', 'unit.ttl', 'http://rdf.bonsai.uno/unit');
-
-# Ontology
-ld_dir ('/import', 'ontology_v0.2.ttl', 'http://ontology.bonsai.uno/core');
-
-# Extra Graphs
-ld_dir ('/import', 'act_climate_change.ttl', 'http://rdf.bonsai.uno/activitytype/lcia/climate_change');
-ld_dir ('/import', 'act_electricity_grid.ttl', 'http://rdf.bonsai.uno/activitytype/core/electricity_grid');
-ld_dir ('/import', 'act_entsoe.ttl', 'http://rdf.bonsai.uno/activitytype/entsoe');
-
-ld_dir ('/import', 'flo_obj_climate_change.ttl', 'http://rdf.bonsai.uno/flowobject/lcia/climate_change');
-ld_dir ('/import', 'flo_obj_electricity_grid.ttl', 'http://rdf.bonsai.uno/flowobject/core/electricity_grid');
-ld_dir ('/import', 'flo_obj_us_epa_elem.ttl', 'http://rdf.bonsai.uno/flowobject/us_epa_elem');
-
-rdf_loader_run ();
-checkpoint;
-```
+Download script to import graphs into virtuoso.
+`wget https://gist.github.com/c8069487db59827cd62ab3d7ebb132a5.git -O /import/import.isql`
+Run import script
+`docker exec -it vos isql  1111 exec="LOAD /import/import.isql"`
 
 ## setup Yasgui
-The yasgui requires no installation. Just place the index.html file in the `srv/import/vsp` folder.
+The yasgui requires no installation.
+We simply add the yasgui index file to the correct folder.
+First enter the cloned yasgui folder.
+`cd yasgui-query-interface`
+Now move the index.html file to the virtuoso.
+`docker cp index.html vos:/opt/virtuoso-opensource/vsp/index.html`
