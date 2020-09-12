@@ -51,9 +51,10 @@ This software is the modified version of the yasgui, used to query the data.
 We make use of the exiobase and ystafdb datasets.
 In this step we download and extract the datasets to their correct repos.
 
-Download the exiobase dataset `EXIOBASE 3.3.17 hsut 2011` from this url `https://www.exiobase.eu/index.php/welcome-to-exiobase`.
+Data access to the exiobase dataset needs a free user. 
+For convenience, we also provide a copy of the dataset freely available at the following url: `https://silo1.sciencedata.dk/shared/20ee45e130a37e87c5b19e07b81b61ec`
+Othervise the exiobase dataset `EXIOBASE 3.3.17 hsut 2011` can be downloaded from this url `https://www.exiobase.eu/index.php/welcome-to-exiobase`.
 It can be found under the tab `DATA DOWNLOAD/EXIOBASE3 - hybrid`.
-It requires a user, which is free.
 Extract the downloaded zip file.
 
 - Copy the file `MR_HSUT_2011_v3_3_17_extensions.xlsb` into the `arborist/arborist/data` folder.
