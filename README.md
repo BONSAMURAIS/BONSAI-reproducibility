@@ -53,14 +53,34 @@ In this step we download and extract the datasets to their correct repos.
 
 Data access to the exiobase dataset needs a free user. 
 For convenience, we also provide a copy of the dataset freely available at the following url: `https://silo1.sciencedata.dk/shared/20ee45e130a37e87c5b19e07b81b61ec`
+`wget 'https://silo1.sciencedata.dk/themes/deic_theme_oc7/apps/files_sharing/public.php?service=files&t=20ee45e130a37e87c5b19e07b81b61ec&path=%2Fexiobase-3.3.17&files=EXIOBASE_3.3.17_hsut_2011.zip&download&g=' -O exiobase-dataset.zip`
+
+Install unzip
+`apt-get install unzip`
+
+Unzip exiobase-dataset.zip
+`unzip exiobase-dataset.zip`
+
+Remove exiobase-dataset.zip for space constraints.
+`rm -rf exiobase-dataset.zip`
+
 Othervise the exiobase dataset `EXIOBASE 3.3.17 hsut 2011` can be downloaded from this url `https://www.exiobase.eu/index.php/welcome-to-exiobase`.
 It can be found under the tab `DATA DOWNLOAD/EXIOBASE3 - hybrid`.
 Extract the downloaded zip file.
 
-- Copy the file `MR_HSUT_2011_v3_3_17_extensions.xlsb` into the `arborist/arborist/data` folder.
-- Copy both the `MR_HSUP_2011_v3_3_17.xlsb` and the `MR_HUSE_2011_v3_3_17.xlsb` files to the `EXIOBASE-conversion-software/EXIOBASE-conversion-software/data` folder.
+- Move the file `MR_HSUT_2011_v3_3_17_extensions.xlsb` into the `arborist/arborist/data` folder.
+`mv EXIOBASE_3.3.17_hsut_2011/MR_HSUT_2011_v3_3_17_extensions.xlsb arborist/arborist/data`
+
+- Move both the `MR_HSUP_2011_v3_3_17.xlsb` and the `MR_HUSE_2011_v3_3_17.xlsb` files to the `EXIOBASE-conversion-software/EXIOBASE-conversion-software/data` folder.
+`mv EXIOBASE_3.3.17_hsut_2011/MR_HUSE_2011_v3_3_17.xlsb EXIOBASE-conversion-software/EXIOBASE_conversion_software/data/`
+`mv EXIOBASE_3.3.17_hsut_2011/MR_HSUP_2011_v3_3_17.xlsb EXIOBASE-conversion-software/EXIOBASE_conversion_software/data/`
 
 Download the ystafdb dataset from this url `https://www.sciencebase.gov/catalog/file/get/5b9a7c28e4b0d966b485d915?f=__disk__0f%2F58%2Fa7%2F0f58a74db669ee5418f36a698bc85781e867e0ab`.
+`wget 'https://www.sciencebase.gov/catalog/file/get/5b9a7c28e4b0d966b485d915?f=__disk__0f%2F58%2Fa7%2F0f58a74db669ee5418f36a698bc85781e867e0ab' -O ystafdb-input.zip`
+
+Unzip the ystafdb dataset
+`unzip ystafdb-input.zip -d ystafdb-input`
+
 Extract the contents of the zip file. 
 As an example, the data can be placed in a folder `ystafdb-input`. 
 The following files from the Base Data are mandatory to have in the folder:
