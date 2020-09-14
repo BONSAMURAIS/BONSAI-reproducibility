@@ -86,6 +86,7 @@ To install the software, and convert the xlsb files to csv files, the following 
 
 ```bash
 cd ~/EXIOBASE-conversion-software
+mkdir output
 
 pipenv --python python3 install
 pipenv shell
@@ -101,20 +102,20 @@ While still in the pipenv, we convert hsup data file to an rdf graph with the fo
 ```bash
 csv2rdf-cli -i EXIOBASE_conversion_software/data/MR_HSUP_2011_v3_3_17.csv -o EXIOBASE_conversion_software/data/  -c HSUP --flowtype output --multifile 100000 --merge True
 
-mv output/flows_merged.nt output/exiobase-hsup.nt
-gzip output/exiobase-hsup.nt
+mv EXIOBASE_conversion_software/data/flows_merged.nt output/exiobase_hsup.nt
+gzip output/exiobase_hsup.nt
 
-rm -rf MR_HSUP_2011_v3_3_17*
+rm -rf EXIOBASE_conversion_software/data/MR_HSUP_2011_v3_3_17*
 ```
 
 We now do the same for the huse data file with the following commands:
 ```bash
 csv2rdf-cli -i EXIOBASE_conversion_software/data/MR_HUSE_2011_v3_3_17.csv -o EXIOBASE_conversion_software/data/  -c HUSE --flowtype input --multifile 100000 --merge True
 
-mv output/flows_merged.nt output/exiobase-huse.nt
-gzip output/exiobase-huse.nt
+mv EXIOBASE_conversion_software/data/flows_merged.nt output/exiobase_huse.nt
+gzip output/exiobase_huse.nt
 
-rm -rf output/MR_HUSE_2011_v3_3_17*
+rm -rf EXIOBASE_conversion_software/data/MR_HUSE_2011_v3_3_17*
 
 exit
 ```
@@ -159,40 +160,15 @@ exit
 The ystafdb triple files can now be fould in the output folder
 
 ## collect triple files
-Create a folder `import` to hold all triple graph files, which we want to load into virtuoso.
-Go through all files of the `ystafdb/output` folder, rename the files as follows, according to their location in the `output` folder structure, and add them to the `import` folder.
+We now move all output graphs to a single folder, for import into virtoso.
+This is donw with the following commands:
+```bash
+git clone https://gist.github.com/cf16f495291d6f47fbd659367c2863ea.git
 
-- activitytype/ystafdb/ystafdb.ttl -> act_ystafdb.ttl
-- flowobject/ystafdb/ystafdb.ttl -> flo_obj_ystafdb.ttl
-- foaf/ystafdb/ystafdb.ttl -> foaf_ystafdb.ttl
-- location/ystafdb/ystafdb.ttl -> loc_ystafdb.ttl
-- prov/ystafdb/ystafdb.ttl -> prov_ystafdb.ttl
-- flow/ystafdb/huse/huse.ttl -> ystafdb_huse.ttl
+mv cf16f495291d6f47fbd659367c2863ea/file_mover.bash .
 
-Go through all files of the `arborist/output` folder, rename the files as follows, according to their location in the `output` folder structure, and add them to the `import` folder.
-
-- activitytype/exiobase3_3_17/exiobase3_3_17.ttl -> act_exiobase3_3_17.ttl
-- flowobject/exiobase3_3_17/exiobase3_3_17.ttl -> flo_obj_exiobase3_3_17.ttl
-- foaf/foaf.ttl -> foaf_exiobase3_3_17.ttl
-- location/exiobase3_3_17/exiobase3_3_17.ttl -> loc_exiobase3_3_17.ttl
-- prov/prov.ttl -> prov_exiobase3_3_17.ttl
-- flow/exiobase3_3_17/exiobase3_3_17.ttl -> exiobase3_3_17_emission.ttl
-- time/time.ttl -> time.ttl
-- unit/unit.ttl -> unit.ttl
-- activitytype/lcia/climate_change/climate_change.ttl -> act_climate_change.ttl
-- activitytype/core/electricity_grid/electricity_grid.ttl -> act_electricity_grid.ttl
-- activitytype/entsoe/entsoe.ttl -> act_entsoe.ttl
-- flowobject/lcia/climate_change/climate_change.ttl -> flo_obj_climate_change.ttl
-- flowobject/core/electricity_grid/electricity_grid.ttl -> flo_obj_electricity_grid.ttl
-- flowobject/us_epa_elem/us_epa_elem.ttl -> flo_obj_us_epa_elem.ttl
-
-From the `EXIOBASE_conversion_software/data` folder, move the gzipped huse and hsup files to the import folder.
-- exiobase_hsup.nt.gz
-- exiobase_huse.nt.gz
-
-Download the version `0.2` of the BONSAI ontology from this url `https://ontology.bonsai.uno/core/ontology_v0.2.ttl` and add it to the import folder.
-- ontology_v0.2.ttl
-
+rm -rf cf16f495291d6f47fbd659367c2863ea
+```
 
 ## Setup Virtuoso
 To setup virtuoso with docker, use the following commands:
@@ -219,8 +195,5 @@ docker exec -it vos isql  1111 exec="LOAD /import/import.isql"
 
 ## setup Yasgui
 The yasgui requires no installation.
-We simply add the yasgui index file to the correct folder.
-First enter the cloned yasgui folder.
-`cd yasgui-query-interface`
-Now move the index.html file to the virtuoso.
-`docker cp index.html vos:/opt/virtuoso-opensource/vsp/index.html`
+We simply add the yasgui index file to the correct folder inside virtuoso.
+`docker cp yasgui-query-interface/index.html vos:/opt/virtuoso-opensource/vsp/index.html`
