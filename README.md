@@ -1,150 +1,162 @@
-# Overall Workflow
+# Reproducibility Instructions
+The following instructions are for reproducing the results in our recent ISWC paper:
+
+`Transparent Integration and Sharing of Life Cycle Sustainability Data with Provenance`
+
+
+## Overall Workflow
 The overall workflow has several steps, which needs to be executed in the correct order.
 Below is the list of steps, followed by individual instructions:
 
-- Install machine
-- Clone repos
-- Download files
-- Start conversion scripts
+- Requirements
+- Clone Repositories
+- Getting Data
+- Run Data Conversion
 - Collect triple files
 - Setup virtuoso
 - Load triples
 - Setup Yasgui
 
 
-## Install machine
+## Requirements
 To run all scripts, a machine running linux needs to installed.
 The machine should atleast have the following specs:
 
-- Ubuntu 18.04
-- 64GB RAM
-- 1TB Harddisk
-- 8 cores
+- Software;
+	- Linux Ubuntu 18.04 Distribution (with git, bash, unzip, wget and docker)
+	- Python 3.6+, pip and virtualenv
 
+- Hardware:
+	- RAM: 64GB RAM
+	- DISK SPACE: ´\~500GB Free
+	- CPU: 8 cores
 
-## Clone Repos
-Multiple repositories needs to be cloned.
-Start by cloning each of the following repositories: 
+## Clone Repositories
+All code for reproducibility is publically available from git repositories.
 
-### Arborist
-Arborist is used to extract meta data triples from the exiobase 3.3.17 dataset.	
+You can clone all repositories needed for reproducibility with the following commands:
 
-- `https://github.com/BONSAMURAIS/arborist`
+```bash
+git clone https://github.com/BONSAMURAIS/arborist
 
-### EXIOBASE-conversion-software
-EXIOBASE-conversion-software is used to extract Flows, Activities and BalanceableProperties from the exiobase 3.3.17 dataset.
+git clone https://github.com/BONSAMURAIS/EXIOBASE-conversion-software
 
-- `https://github.com/BONSAMURAIS/EXIOBASE-conversion-software`
+git clone https://github.com/BONSAMURAIS/ystafdb
 
-### YSTAFDB
-YSTAFDB is used to extract Flows, Activities, BalanceableProperties, Flow Objects, Locations, Activity Types, Foaf and Provenance information from the YSTAFDB database.
+git clone https://github.com/BONSAMURAIS/yasgui-query-interface 
+```
 
-- `https://github.com/BONSAMURAIS/ystafdb`
-
-### YASGUI
-This software is the modified version of the yasgui, used to query the data.
-
-- `https://github.com/BONSAMURAIS/yasgui-query-interface`
-
-
-## Download files
+## Getting Data
 We make use of the exiobase and ystafdb datasets.
-In this step we download and extract the datasets to their correct repos.
-
 Data access to the exiobase dataset needs a free user. 
-For convenience, we also provide a copy of the dataset freely available at the following url: `https://silo1.sciencedata.dk/shared/20ee45e130a37e87c5b19e07b81b61ec`
-`wget 'https://silo1.sciencedata.dk/themes/deic_theme_oc7/apps/files_sharing/public.php?service=files&t=20ee45e130a37e87c5b19e07b81b61ec&path=%2Fexiobase-3.3.17&files=EXIOBASE_3.3.17_hsut_2011.zip&download&g=' -O exiobase-dataset.zip`
+For convenience, we provide a copy of the dataset freely available at the following url: `https://silo1.sciencedata.dk/shared/20ee45e130a37e87c5b19e07b81b61ec`
 
-Install unzip
-`apt-get install unzip`
+You can download, upack and move exiobase files to their required positions with the following commands:
+```bash
+wget 'https://silo1.sciencedata.dk/themes/deic_theme_oc7/apps/files_sharing/public.php?service=files&t=20ee45e130a37e87c5b19e07b81b61ec&path=%2Fexiobase-3.3.17&files=EXIOBASE_3.3.17_hsut_2011.zip&download&g=' -O exiobase-dataset.zip
 
-Unzip exiobase-dataset.zip
-`unzip exiobase-dataset.zip`
+unzip exiobase-dataset.zip
+rm -rf exiobase-dataset.zip
 
-Remove exiobase-dataset.zip for space constraints.
-`rm -rf exiobase-dataset.zip`
+mv EXIOBASE_3.3.17_hsut_2011/MR_HSUT_2011_v3_3_17_extensions.xlsb arborist/arborist/data
+mv EXIOBASE_3.3.17_hsut_2011/MR_HUSE_2011_v3_3_17.xlsb EXIOBASE-conversion-software/EXIOBASE_conversion_software/data/
+mv EXIOBASE_3.3.17_hsut_2011/MR_HSUP_2011_v3_3_17.xlsb EXIOBASE-conversion-software/EXIOBASE_conversion_software/data/
+```
 
 Othervise the exiobase dataset `EXIOBASE 3.3.17 hsut 2011` can be downloaded from this url `https://www.exiobase.eu/index.php/welcome-to-exiobase`.
 It can be found under the tab `DATA DOWNLOAD/EXIOBASE3 - hybrid`.
-Extract the downloaded zip file.
+Extract the downloaded zip file and move files according to the above commands.
 
-- Move the file `MR_HSUT_2011_v3_3_17_extensions.xlsb` into the `arborist/arborist/data` folder.
-`mv EXIOBASE_3.3.17_hsut_2011/MR_HSUT_2011_v3_3_17_extensions.xlsb arborist/arborist/data`
+You can download and unpach the ystafdb files with the following commands:
+```bash
+wget 'https://www.sciencebase.gov/catalog/file/get/5b9a7c28e4b0d966b485d915?f=__disk__0f%2F58%2Fa7%2F0f58a74db669ee5418f36a698bc85781e867e0ab' -O ystafdb-input.zip
 
-- Move both the `MR_HSUP_2011_v3_3_17.xlsb` and the `MR_HUSE_2011_v3_3_17.xlsb` files to the `EXIOBASE-conversion-software/EXIOBASE-conversion-software/data` folder.
-`mv EXIOBASE_3.3.17_hsut_2011/MR_HUSE_2011_v3_3_17.xlsb EXIOBASE-conversion-software/EXIOBASE_conversion_software/data/`
-`mv EXIOBASE_3.3.17_hsut_2011/MR_HSUP_2011_v3_3_17.xlsb EXIOBASE-conversion-software/EXIOBASE_conversion_software/data/`
+unzip ystafdb-input.zip -d ystafdb-input
 
-Download the ystafdb dataset from this url `https://www.sciencebase.gov/catalog/file/get/5b9a7c28e4b0d966b485d915?f=__disk__0f%2F58%2Fa7%2F0f58a74db669ee5418f36a698bc85781e867e0ab`.
-`wget 'https://www.sciencebase.gov/catalog/file/get/5b9a7c28e4b0d966b485d915?f=__disk__0f%2F58%2Fa7%2F0f58a74db669ee5418f36a698bc85781e867e0ab' -O ystafdb-input.zip`
+mv ystafdb-input ystafdb
+```
 
-Unzip the ystafdb dataset
-`unzip ystafdb-input.zip -d ystafdb-input`
-
-Extract the contents of the zip file. 
-As an example, the data can be placed in a folder `ystafdb-input`. 
-The following files from the Base Data are mandatory to have in the folder:
-
-- material_names.csv
-- subsystems.csv
-- flows.csv
-- publications.csv
-- reference_spaces.csv
-- reference_materials.csv
-- reference_timeframes.csv
-
-## start conversion scripts
+## Run Data Conversion
 In this step we run the EXIOBASE-conversion-software, as well as the ystafdb software, to convert excel files to rdf data.
 
 ### EXIOBASE-conversion-software
 The software is used to first convert the exiobase 3.3.17 xlsb dataset to a csv file, and from that extract the final triple graph.
-The tool runs in python 3.7. 
-For the usage of the EXIOBASE-conversion-software software for exiobase data extraction, as used in this paper, and presented from the `odas.aau.dk server`, the following steps were taken:
 
-- Install python 3.7 along with pipenv
-- Enter EXIOBASE-conversion-software: `cd EXIOBASE-conversion-software`
-- Install pipenv: `pipenv install`
-- Enter pipenv: `pipenv shell`
-- Install package: `python setup.py install`
-- Convert hsup xlsb to csv file: `excel2csv-cli -i EXIOBASE_conversion_software/data/MR_HSUP_2011_v3_3_17.xlsb -o EXIOBASE_conversion_software/data/`
-- Convert huse xlsb to csv file: `excel2csv-cli -i EXIOBASE_conversion_software/data/MR_HUSE_2011_v3_3_17.xlsb -o EXIOBASE_conversion_software/data/`
+To install the software, and convert the xlsb files to csv files, the following commands can be used:
 
-- Convert hsup csv to nt graph: `csv2rdf-cli -i EXIOBASE_conversion_software/data/MR_HSUP_2011_v3_3_17.csv -o EXIOBASE_conversion_software/data/  -c HSUP --flowtype output --multifile 100000 --merge True`
-- The data folder will now be filled with Many .nt files each containing a small portion of all hsup triples. 
-- The only relevent file is the `flows_merged.nt` file.
-- To preserve space, rename the file to `exiobase-hsup.nt`, gzip the file, and remove all smaller files with names like `MR_HSUP_2011_v3_3_17_x.nt`.
+```bash
+cd ~/EXIOBASE-conversion-software
 
-- Convert huse csv to nt graph: `csv2rdf-cli -i EXIOBASE_conversion_software/data/MR_HUSE_2011_v3_3_17.csv -o EXIOBASE_conversion_software/data/  -c HUSE --flowtype input --multifile 100000 --merge True`
-- The data folder will now be filled with Many .nt files each containing a small portion of all huse triples. The only relevent file is the `flows_merged.nt` file.
-- To preserve space, rename the file to `exiobase-huse.nt`, gzip the file, and remove all smaller files with names like `MR_HUSE_2011_v3_3_17_x.nt`.
+pipenv --python python3 install
+pipenv shell
+
+python setup.py install
+
+excel2csv-cli -i EXIOBASE_conversion_software/data/MR_HSUP_2011_v3_3_17.xlsb -o EXIOBASE_conversion_software/data/
+excel2csv-cli -i EXIOBASE_conversion_software/data/MR_HUSE_2011_v3_3_17.xlsb -o EXIOBASE_conversion_software/data/
+```
+
+Be aware, the following scripts can take several hours to run, and should in some environments be run in a terminal screen environment.
+While still in the pipenv, we convert hsup data file to an rdf graph with the following commands:
+```bash
+csv2rdf-cli -i EXIOBASE_conversion_software/data/MR_HSUP_2011_v3_3_17.csv -o EXIOBASE_conversion_software/data/  -c HSUP --flowtype output --multifile 100000 --merge True
+
+mv output/flows_merged.nt output/exiobase-hsup.nt
+gzip output/exiobase-hsup.nt
+
+rm -rf MR_HSUP_2011_v3_3_17*
+```
+
+We now do the same for the huse data file with the following commands:
+```bash
+csv2rdf-cli -i EXIOBASE_conversion_software/data/MR_HUSE_2011_v3_3_17.csv -o EXIOBASE_conversion_software/data/  -c HUSE --flowtype input --multifile 100000 --merge True
+
+mv output/flows_merged.nt output/exiobase-huse.nt
+gzip output/exiobase-huse.nt
+
+rm -rf output/MR_HUSE_2011_v3_3_17*
+
+exit
+```
+
+The two output rdf graphs for the hsup and huse data can now be found in the `output` folder as `exiobase-huse.nt.gz` and `exiobase-hsup.nt.gz`.
 
 ### arborist
-The tool runs in python 3.7. 
-For the usage of the arborist software for exiobase data extraction, as used in this paper, and presented from the odas.aau.dk server, the following steps were taken:
+The software is used to extract meta data from the exiobase dataset, used as a foundation of integration with other datasets.
+For the installation and usage of the arborist dataset, run the following commands:
+```bash
+cd ~/arborist
 
-- In the config.json file, set all values to true
-- Install python 3.7 along with pipenv
-- Enter arborist folder: `cd arborist`
-- Install pipenv: `pipenv install`
-- Enter pipenv: `pipenv shell`
-- Run install script: `python setup.py install`
-- Run arborist cli: `arborist-cli regenerate output`
-- The generated triples can now be found in the output folder
+rm -rf config.json
+
+git clone https://gist.github.com/bd4ab2d5ed82a8523a162e76d968971a.git
+mv bd4ab2d5ed82a8523a162e76d968971a/config.json .
+rm -rf bd4ab2d5ed82a8523a162e76d968971a
+
+pipenv --python python3 install
+pipenv shell
+
+python setup.py install
+arborist-cli regenerate output -i arborist/data/
+
+exit
+```
 
 ### YSTAFDB
-The tool runs in python 3.7.
+The software is used to extract triple graphs from the ystafdb dataset.
+For the installation and usage of the ystafdb dataset, run the following commands:
+```bash
+cd ~/ystafdb
 
-For the usage of the YSTAFDB software for YSTAFDB data extraction, as used in this paper, and presented from the odas.aau.dk server, the following steps were taken:
+pipenv --python python3 install
+pipenv shell
 
-- Download the ystafdb csv files as described in the readme, and put them in the ystafdb/data folder.
-- Install python 3.7 along with pipenv
-- Enter ystafdb: `cd ystafdb`
-- Install pipenv: `pipenv install`
-- Enter pipenv: `pipenv shell`
-- Install package: `python setup.py install`
-- From the Download files section of the readme, ystafdb data was downloaded and put in a file called `ystafdb-input`
-- Extract triples: `ystafdb-cli -i /path/to/ystafdb-input`
-- The ystafdb triples can now be fould in the output folder
+python setup.py install
+ystafdb-cli -i ystafdb-input
+
+exit
+```
+The ystafdb triple files can now be fould in the output folder
 
 ## collect triple files
 Create a folder `import` to hold all triple graph files, which we want to load into virtuoso.
@@ -164,7 +176,7 @@ Go through all files of the `arborist/output` folder, rename the files as follow
 - foaf/foaf.ttl -> foaf_exiobase3_3_17.ttl
 - location/exiobase3_3_17/exiobase3_3_17.ttl -> loc_exiobase3_3_17.ttl
 - prov/prov.ttl -> prov_exiobase3_3_17.ttl
-- flow/exiobase3_3_17/emission -> exiobase3_3_17_emission.ttl
+- flow/exiobase3_3_17/exiobase3_3_17.ttl -> exiobase3_3_17_emission.ttl
 - time/time.ttl -> time.ttl
 - unit/unit.ttl -> unit.ttl
 - activitytype/lcia/climate_change/climate_change.ttl -> act_climate_change.ttl
@@ -183,24 +195,27 @@ Download the version `0.2` of the BONSAI ontology from this url `https://ontolog
 
 
 ## Setup Virtuoso
-Pull docker Virtuoso
-`docker pull openlink/virtuoso-opensource-7:latest`
-Made database directory
-`mkdir -p database`
-Get custom virtuoso.ini file
-`wget https://gist.githubusercontent.com/kuzeko/5d53f9800a4b6d45006f0f9dc322ed07/raw/bb2c404ea315f7f56e71523a87a7e6679815b13a/virtuoso.ini.example -O virtuoso.ini`
-Make database directory
-`mv virtuoso.ini database/`
-Make import folder
-`mkdir -p import`
-Run docker
-`docker run --name vos -d --volume `pwd`/database:/database -v `pwd`/import:/import -t -p 1111:1111 -p 8890:8890 -i openlink/virtuoso-opensource-7:latest`
+To setup virtuoso with docker, use the following commands:
+```bash
+docker pull openlink/virtuoso-opensource-7:latest
+
+mkdir database
+
+wget https://gist.githubusercontent.com/kuzeko/5d53f9800a4b6d45006f0f9dc322ed07/raw/bb2c404ea315f7f56e71523a87a7e6679815b13a/virtuoso.ini.example -O virtuoso.ini
+
+mv virtuoso.ini database/
+
+docker run --name vos -d --volume `pwd`/database:/database -v `pwd`/import:/import -t -p 1111:1111 -p 8890:8890 -i openlink/virtuoso-opensource-7:latest
+```
 
 ## Load Triples
-Download script to import graphs into virtuoso.
-`wget https://gist.github.com/c8069487db59827cd62ab3d7ebb132a5.git -O /import/import.isql`
-Run import script
-`docker exec -it vos isql  1111 exec="LOAD /import/import.isql"`
+We now load all triples into virtuoso, using a script which can be executed through isql.
+To download the script and import all graphs, use the following commands:
+```bash
+wget https://gist.github.com/c8069487db59827cd62ab3d7ebb132a5.git -O /import/import.isql
+
+docker exec -it vos isql  1111 exec="LOAD /import/import.isql"
+```
 
 ## setup Yasgui
 The yasgui requires no installation.
