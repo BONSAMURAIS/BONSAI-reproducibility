@@ -168,6 +168,8 @@ git clone https://gist.github.com/cf16f495291d6f47fbd659367c2863ea.git
 mv cf16f495291d6f47fbd659367c2863ea/file_mover.bash .
 
 rm -rf cf16f495291d6f47fbd659367c2863ea
+
+bash file_mover.bash
 ```
 
 ## Setup Virtuoso
