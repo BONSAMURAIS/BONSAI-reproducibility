@@ -72,8 +72,9 @@ You can download and unpach the ystafdb files with the following commands:
 wget 'https://www.sciencebase.gov/catalog/file/get/5b9a7c28e4b0d966b485d915?f=__disk__0f%2F58%2Fa7%2F0f58a74db669ee5418f36a698bc85781e867e0ab' -O ystafdb-input.zip
 
 unzip ystafdb-input.zip -d ystafdb-input
+rm -rf ystafdb-input.zip
 
-mv ystafdb-input ystafdb
+mv ystafdb-input ystafdb/
 ```
 
 ## Run Data Conversion
@@ -156,6 +157,7 @@ python setup.py install
 ystafdb-cli -i ystafdb-input
 
 exit
+cd ../
 ```
 The ystafdb triple files can now be fould in the output folder
 
@@ -168,8 +170,11 @@ git clone https://gist.github.com/cf16f495291d6f47fbd659367c2863ea.git
 mv cf16f495291d6f47fbd659367c2863ea/file_mover.bash .
 
 rm -rf cf16f495291d6f47fbd659367c2863ea
+mkdir -p import
 
 bash file_mover.bash
+
+wget https://ontology.bonsai.uno/core/ontology_v0.2.ttl -O import/ontology_v0.2.ttl
 ```
 
 ## Setup Virtuoso
@@ -177,7 +182,7 @@ To setup virtuoso with docker, use the following commands:
 ```bash
 docker pull openlink/virtuoso-opensource-7:latest
 
-mkdir database
+mkdir -p database
 
 wget https://gist.githubusercontent.com/kuzeko/5d53f9800a4b6d45006f0f9dc322ed07/raw/bb2c404ea315f7f56e71523a87a7e6679815b13a/virtuoso.ini.example -O virtuoso.ini
 
@@ -190,7 +195,11 @@ docker run --name vos -d --volume `pwd`/database:/database -v `pwd`/import:/impo
 We now load all triples into virtuoso, using a script which can be executed through isql.
 To download the script and import all graphs, use the following commands:
 ```bash
-wget https://gist.github.com/c8069487db59827cd62ab3d7ebb132a5.git -O /import/import.isql
+git clone https://gist.github.com/IKnowLogic/c8069487db59827cd62ab3d7ebb132a5
+
+mv c8069487db59827cd62ab3d7ebb132a5/import.isql import/
+
+rm -rf c8069487db59827cd62ab3d7ebb132a5
 
 docker exec -it vos isql  1111 exec="LOAD /import/import.isql"
 ```
