@@ -5,7 +5,7 @@ The following instructions are for reproducing the results in our recent ISWC pa
 
 
 ## Overall Workflow
-The overall workflow has several steps, which needs to be executed in the correct order.
+The overall workflow has several steps, which need to be executed in the correct order.
 Below is the list of steps, followed by individual instructions:
 
 - Requirements
@@ -20,7 +20,7 @@ Below is the list of steps, followed by individual instructions:
 
 
 ## Requirements
-To run all scripts, a machine running linux needs to installed.
+To run all scripts, a machine running Linux needs to be installed.
 The machine should atleast have the following specs:
 
 - Software;
@@ -48,11 +48,11 @@ git clone https://github.com/BONSAMURAIS/yasgui-query-interface
 ```
 
 ## Getting Data
-We make use of the exiobase and ystafdb datasets.
+We make use of the exiobase and YSTAFDB datasets.
 Data access to the exiobase dataset needs a free user. 
-For convenience, we provide a copy of the dataset freely available at the following url: `https://silo1.sciencedata.dk/shared/20ee45e130a37e87c5b19e07b81b61ec`
+For convenience, we provide a copy of the dataset freely available at the following URL: `https://silo1.sciencedata.dk/shared/20ee45e130a37e87c5b19e07b81b61ec`
 
-You can download, upack and move exiobase files to their required positions with the following commands:
+You can download, unpack, and move exiobase files to their required positions with the following commands:
 ```bash
 wget 'https://silo1.sciencedata.dk/themes/deic_theme_oc7/apps/files_sharing/public.php?service=files&t=20ee45e130a37e87c5b19e07b81b61ec&path=%2Fexiobase-3.3.17&files=EXIOBASE_3.3.17_hsut_2011.zip&download&g=' -O exiobase-dataset.zip
 
@@ -64,11 +64,11 @@ mv EXIOBASE_3.3.17_hsut_2011/MR_HUSE_2011_v3_3_17.xlsb EXIOBASE-conversion-softw
 mv EXIOBASE_3.3.17_hsut_2011/MR_HSUP_2011_v3_3_17.xlsb EXIOBASE-conversion-software/EXIOBASE_conversion_software/data/
 ```
 
-Othervise the exiobase dataset `EXIOBASE 3.3.17 hsut 2011` can be downloaded from this url `https://www.exiobase.eu/index.php/welcome-to-exiobase`.
+Otherwise, the exiobase dataset `EXIOBASE 3.3.17 hsut 2011` can be downloaded from this URL `https://www.exiobase.eu/index.php/welcome-to-exiobase`.
 It can be found under the tab `DATA DOWNLOAD/EXIOBASE3 - hybrid`.
 Extract the downloaded zip file and move files according to the above commands.
 
-You can download and unpach the ystafdb files with the following commands:
+You can download and unpack the YSTAFDB files with the following commands:
 ```bash
 wget 'https://www.sciencebase.gov/catalog/file/get/5b9a7c28e4b0d966b485d915?f=__disk__0f%2F58%2Fa7%2F0f58a74db669ee5418f36a698bc85781e867e0ab' -O ystafdb-input.zip
 
@@ -79,12 +79,12 @@ mv ystafdb-input ystafdb/
 ```
 
 ## Run Data Conversion
-In this step we run the EXIOBASE-conversion-software, as well as the ystafdb software, to convert excel files to rdf data.
+In this step we run the EXIOBASE-conversion-software, as well as the ystafdb software, to convert excel files to RDF data.
 
 ### EXIOBASE-conversion-software
-The software is used to first convert the exiobase 3.3.17 xlsb dataset to a csv file, and from that extract the final triple graph.
+The software is used to first convert the exiobase 3.3.17 xlsb dataset to a CSV file and from that extract the final triple graph.
 
-To install the software, and convert the xlsb files to csv files, the following commands can be used:
+To install the software, and convert the xlsb files to CSV files, the following commands can be used:
 
 ```bash
 cd ~/EXIOBASE-conversion-software
@@ -100,7 +100,7 @@ excel2csv-cli -i EXIOBASE_conversion_software/data/MR_HUSE_2011_v3_3_17.xlsb -o 
 ```
 
 Be aware, the following scripts can take several hours to run, and should in some environments be run in a terminal screen environment.
-While still in the pipenv, we convert hsup data file to an rdf graph with the following commands:
+While still in the pipenv, we convert the hsup data file to an RDF graph with the following commands:
 ```bash
 csv2rdf-cli -i EXIOBASE_conversion_software/data/MR_HSUP_2011_v3_3_17.csv -o EXIOBASE_conversion_software/data/  -c HSUP --flowtype output --multifile 100000 --merge True
 
@@ -122,10 +122,10 @@ rm -rf EXIOBASE_conversion_software/data/MR_HUSE_2011_v3_3_17*
 exit
 ```
 
-The two output rdf graphs for the hsup and huse data can now be found in the `output` folder as `exiobase-huse.nt.gz` and `exiobase-hsup.nt.gz`.
+The two output RDF graphs for the hsup and huse data can now be found in the `output` folder as `exiobase-huse.nt.gz` and `exiobase-hsup.nt.gz`.
 
 ### arborist
-The software is used to extract meta data from the exiobase dataset, used as a foundation of integration with other datasets.
+The software is used to extract metadata from the exiobase dataset, used as a foundation of integration with other datasets.
 For the installation and usage of the arborist dataset, run the following commands:
 ```bash
 cd ~/arborist
@@ -160,11 +160,11 @@ ystafdb-cli -i ystafdb-input
 exit
 cd ../
 ```
-The ystafdb triple files can now be fould in the output folder
+The ystafdb triple files can now be found in the output folder
 
 ## collect triple files
-We now move all output graphs to a single folder, for import into virtoso.
-This is donw with the following commands:
+We now move all output graphs to a single folder, for import into virtuoso.
+This is done with the following commands:
 ```bash
 git clone https://gist.github.com/cf16f495291d6f47fbd659367c2863ea.git
 
@@ -193,7 +193,7 @@ docker run --name vos -d --volume `pwd`/database:/database -v `pwd`/import:/impo
 ```
 
 ## Load Triples
-We now load all triples into virtuoso, using a script which can be executed through isql.
+We now load all triples into virtuoso, using a script that can be executed through isql.
 To download the script and import all graphs, use the following commands:
 ```bash
 git clone https://gist.github.com/IKnowLogic/c8069487db59827cd62ab3d7ebb132a5
@@ -211,10 +211,10 @@ We simply add the yasgui index file to the correct folder inside virtuoso.
 `docker cp yasgui-query-interface/index.html vos:/opt/virtuoso-opensource/vsp/index.html`
 
 ## Validate Database
-We have created several query tests which for which consistensy and correctness of the database can be shown.
+We have created several query tests for which consistency and correctness of the database can be shown.
 We have provided query results from the original bonsai database, along with their respective queries.
-The following process will run all queries on the new database, and md5 check the results agains the result files from the original database.
-Use the following commands to test the consistensy of the database.
+The following process will run all queries on the new database, and md5 check the results against the result files from the original database.
+Use the following commands to test the consistency of the database.
 ```bash
 git clone https://github.com/IKnowLogic/BONSAI-reproducibility.git
 
@@ -226,6 +226,6 @@ cd BONSAI-reproducibility
 bash bonsai_database_test.bash
 ```
 
-The database will now have all queries from the data_queries run agains it, and their respective output will be returned as a csv file.
-The files will then be md5 checked against the output csv files of running the queries agains the original odas server database.
+The database will now have all queries from the data_queries run against it, and their respective output will be returned as a CSV file.
+The files will then be md5 checked against the output CSV files of running the queries against the original odas server database.
 OK means the md5 hashes are identical, whereas FALSE means they are not identical.
