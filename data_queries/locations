@@ -7,4 +7,4 @@ WHERE
 {
   ?location a schema:Place .
   ?location rdfs:label ?label
-} order by asc(?label)' --output 'location.csv.gz'
+} order by asc(?label)' --output 'locations.csv.gz'
