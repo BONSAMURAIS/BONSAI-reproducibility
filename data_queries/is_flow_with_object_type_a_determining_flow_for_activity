@@ -1,0 +1,23 @@
+curl --request POST 'http://localhost:8890/sparql/?' --header 'Accept-Encoding: gzip' --data 'format=csv' --data-urlencode 'query=PREFIX schema: <http://schema.org/>
+PREFIX bont: <http://ontology.bonsai.uno/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT (xsd:string(?z) as ?isDetermining) 
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/hsup>
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/huse>
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/emission>
+FROM <http://rdf.bonsai.uno/location/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/flowobject/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/activitytype/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/unit>
+FROM <http://rdf.bonsai.uno/time>
+WHERE
+{
+  bind ( exists {
+    ?xFlow bont:isOutputOf ?yActivity ;
+      ^bont:hasDeterminingFlow ?yActivity ;
+      bont:hasObjectType ?xObject .
+
+    ?xObject rdfs:label "Wheat" .
+    ?yActivity bont:hasActivityType / rdfs:label "Cultivation of wheat" .
+  } as ?z)
+}' --output 'is_flow_with_object_type_a_determining_flow_for_activity.csv.gz'

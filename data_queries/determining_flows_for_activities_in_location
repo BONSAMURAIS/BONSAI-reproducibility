@@ -1,0 +1,29 @@
+curl --request POST 'http://localhost:8890/sparql/?' --header 'Accept-Encoding: gzip' --data 'format=csv' --data-urlencode 'query=PREFIX schema: <http://schema.org/>
+PREFIX bont: <http://ontology.bonsai.uno/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX btime: <http://rdf.bonsai.uno/time#>
+PREFIX om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>
+SELECT ?flowObject ?activityType 
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/hsup>
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/huse>
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/emission>
+FROM <http://rdf.bonsai.uno/location/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/flowobject/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/activitytype/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/unit>
+FROM <http://rdf.bonsai.uno/time>
+WHERE
+{
+  ?f a bont:Flow ;
+    bont:hasObjectType ?fobject .
+
+  ?fobject rdfs:label ?flowObject .
+
+  ?a a bont:Activity ;
+    bont:hasDeterminingFlow ?f ;
+    bont:hasLocation ?l ;
+    bont:hasTemporalExtent btime:2011 ;
+    bont:hasActivityType / rdfs:label ?activityType .
+
+  ?l rdfs:label "DK".
+} order by asc(?flowObject) asc(?activityType)' --output 'determining_flows_for_activities_in_location.csv.gz'

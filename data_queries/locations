@@ -1,0 +1,10 @@
+curl --request POST 'http://localhost:8890/sparql/?' --header 'Accept-Encoding: gzip' --data 'format=csv' --data-urlencode 'query=PREFIX schema: <http://schema.org/>
+PREFIX schema: <http://schema.org/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?location ?label 
+FROM <http://rdf.bonsai.uno/location/exiobase3_3_17>
+WHERE
+{
+  ?location a schema:Place .
+  ?location rdfs:label ?label
+} order by asc(?label)' --output 'location.csv.gz'

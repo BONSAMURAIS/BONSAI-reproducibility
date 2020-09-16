@@ -1,0 +1,18 @@
+curl --request POST 'http://localhost:8890/sparql/?' --header 'Accept-Encoding: gzip' --data 'format=csv' --data-urlencode 'query=PREFIX schema: <http://schema.org/>
+PREFIX bont: <http://ontology.bonsai.uno/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?flowobject ?label
+FROM <http://rdf.bonsai.uno/flowobject/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/hsup>
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/huse>
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/emission>
+FROM <http://rdf.bonsai.uno/location/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/flowobject/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/activitytype/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/unit>
+FROM <http://rdf.bonsai.uno/time>
+WHERE
+{
+  ?flowobject a bont:FlowObject .
+  ?flowobject rdfs:label ?label
+} order by ?label' --output 'flow_objects.csv.gz'

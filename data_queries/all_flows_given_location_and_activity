@@ -1,0 +1,33 @@
+curl --request POST 'http://localhost:8890/sparql/?' --header 'Accept-Encoding: gzip' --data 'format=csv' --data-urlencode 'query=PREFIX schema: <http://schema.org/>
+PREFIX bont: <http://ontology.bonsai.uno/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>
+SELECT ?flowObject (xsd:string(?value) as ?value) ?unit
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/hsup>
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/huse>
+FROM <http://rdf.bonsai.uno/data/exiobase3_3_17/emission>
+FROM <http://rdf.bonsai.uno/location/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/flowobject/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/activitytype/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/unit>
+FROM <http://rdf.bonsai.uno/time>
+WHERE
+{
+  {
+    ?flow a bont:Flow .
+    ?flow bont:isOutputOf ?act .
+    ?act bont:hasActivityType / rdfs:label "Cultivation of wheat".
+    ?act bont:hasLocation / rdfs:label "DK".
+    ?flow bont:hasObjectType / rdfs:label ?flowObject .
+    ?flow om2:hasNumericalValue ?value .
+    ?flow om2:hasUnit / rdfs:label ?unit .
+  } UNION {
+    ?flow a bont:Flow .
+    ?flow bont:isInputOf ?act .
+    ?act bont:hasActivityType / rdfs:label "Cultivation of wheat".
+    ?act bont:hasLocation / rdfs:label "DK".
+    ?flow bont:hasObjectType / rdfs:label ?flowObject .
+    ?flow om2:hasNumericalValue ?value .
+    ?flow om2:hasUnit / rdfs:label ?unit .
+  }
+} order by asc(?flowObject) asc(?value)' --output 'all_flows_given_location_and_activity.csv.gz'

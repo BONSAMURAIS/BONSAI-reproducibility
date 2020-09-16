@@ -1,0 +1,22 @@
+curl --request POST 'http://localhost:8890/sparql/?' --header 'Accept-Encoding: gzip' --data 'format=csv' --data-urlencode 'query=PREFIX schema: <http://schema.org/>
+PREFIX bont: <http://ontology.bonsai.uno/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX btime: <http://rdf.bonsai.uno/time#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX om2: <http://www.ontology-of-units-of-measure.org/resource/om-2/>
+SELECT DISTINCT ?unit
+FROM <http://rdf.bonsai.uno/data/ystafdb/huse>
+FROM <http://rdf.bonsai.uno/location/ystafdb>
+FROM <http://rdf.bonsai.uno/flowobject/ystafdb>
+FROM <http://rdf.bonsai.uno/activitytype/ystafdb>
+FROM <http://rdf.bonsai.uno/unit>
+FROM <http://rdf.bonsai.uno/time>
+FROM <http://rdf.bonsai.uno/prov/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/foaf/exiobase3_3_17>
+FROM <http://rdf.bonsai.uno/prov/ystafdb>
+FROM <http://rdf.bonsai.uno/foaf/ystafdb>
+WHERE
+{
+  ?balance a bont:BalanceableProperty.
+  ?balance om2:hasUnit ?unit
+} order by asc(?unit)' --output 'units_used_for_balanceable_properties.csv.gz'
