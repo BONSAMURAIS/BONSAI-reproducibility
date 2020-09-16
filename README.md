@@ -16,6 +16,7 @@ Below is the list of steps, followed by individual instructions:
 - Setup virtuoso
 - Load triples
 - Setup Yasgui
+- Validate database
 
 
 ## Requirements
@@ -43,7 +44,7 @@ git clone https://github.com/BONSAMURAIS/EXIOBASE-conversion-software
 
 git clone https://github.com/BONSAMURAIS/ystafdb
 
-git clone https://github.com/BONSAMURAIS/yasgui-query-interface 
+git clone https://github.com/BONSAMURAIS/yasgui-query-interface
 ```
 
 ## Getting Data
@@ -208,3 +209,23 @@ docker exec -it vos isql  1111 exec="LOAD /import/import.isql"
 The yasgui requires no installation.
 We simply add the yasgui index file to the correct folder inside virtuoso.
 `docker cp yasgui-query-interface/index.html vos:/opt/virtuoso-opensource/vsp/index.html`
+
+## Validate Database
+We have created several query tests which for which consistensy and correctness of the database can be shown.
+We have provided query results from the original bonsai database, along with their respective queries.
+The following process will run all queries on the new database, and md5 check the results agains the result files from the original database.
+Use the following commands to test the consistensy of the database.
+```bash
+git clone https://github.com/IKnowLogic/BONSAI-reproducibility.git
+
+git clone https://gist.github.com/6de02ab2abd5bbe351d1c251ed94f525.git
+mv 6de02ab2abd5bbe351d1c251ed94f525/bonsai_database_test.bash BONSAI-reproducibility/
+
+cd BONSAI-reproducibility
+
+bash bonsai_database_test.bash
+```
+
+The database will now have all queries from the data_queries run agains it, and their respective output will be returned as a csv file.
+The files will then be md5 checked against the output csv files of running the queries agains the original odas server database.
+OK means the md5 hashes are identical, whereas FALSE means they are not identical.
