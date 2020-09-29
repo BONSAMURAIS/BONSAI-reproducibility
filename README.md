@@ -1,7 +1,7 @@
 # Reproducibility Instructions
-The following instructions are for reproducing the results in our recent ISWC paper:
+The following instructions are for reproducing the results in the paper:
 
-`Transparent Integration and Sharing of Life Cycle Sustainability Data with Provenance`
+`Modelling Life Cycle Sustainability Assessment on the Semantic Web`
 
 
 ## Overall Workflow
